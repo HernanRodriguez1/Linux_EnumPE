@@ -1,4 +1,4 @@
-# Linux_EnumPE - Advanced Privilege Escalation Tool
+# Linux_EnumPE - Privilege Escalation Tool
 
 ![Banner](https://img.shields.io/badge/Linux-PrivEsc%20Enumeration-red) ![Version](https://img.shields.io/badge/Version-1.0-blue) 
 
