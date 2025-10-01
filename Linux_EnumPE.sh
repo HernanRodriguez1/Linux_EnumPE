@@ -412,7 +412,7 @@ user_group_analysis() {
         sudo -l 2>/dev/null > "$REPORT_DIR/sudo_privileges.txt"
         if [ -s "$REPORT_DIR/sudo_privileges.txt" ]; then
             echo -e "  ${RED}[!] Sudo privileges found: ${REPORT_DIR}/sudo_privileges.txt${NC}"
-            grep -E "(NOPASSWD|ALL)" "$REPORT_DIR/sudo_privileges.txt" 2>/dev/null | head -5 | while read -r line; do
+            grep -E "(NOPASSWD|ALL)" "$REPORT_DIR/sudo_privileges.txt" 2>/dev/null | while read -r line; do
                 echo -e "  ${YELLOW}    $line${NC}"
             done
         else
