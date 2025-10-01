@@ -50,8 +50,8 @@
 ```bash
 # Download script
 wget -q https://raw.githubusercontent.com/HernanRodriguez1/Linux_EnumPE/refs/heads/main/Linux_EnumPE.sh
-chmod +x linux_enumpe.sh
-./linux_enumpe.sh
+chmod +x Linux_EnumPE.sh
+./Linux_EnumPE.sh
 ```
 
 ### Method 2: Direct Execution
