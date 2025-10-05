@@ -252,7 +252,7 @@ password_search() {
                         found_sensitive=true
                     fi
                     echo -e "  ${RED}    [!] $hist_file contains: $cmd${NC}"
-                    echo "$found" | head -3 | sed 's/^/        /'
+                    echo "$found" | head -10 | sed 's/^/        /'
                 fi
             done
         fi
@@ -325,8 +325,8 @@ filesystem_analysis() {
         head -10 "$REPORT_DIR/world_writable_dirs.txt" | while read -r dir; do
             echo -e "  ${YELLOW}    - $dir${NC}"
         done
-        if [ $dir_count -gt 10 ]; then
-            echo -e "  ${YELLOW}    ... and $((dir_count - 10)) more${NC}"
+        if [ $dir_count -gt 20 ]; then
+            echo -e "  ${YELLOW}    ... and $((dir_count - 20)) more${NC}"
         fi
     else
         echo -e "  ${GREEN}[✓] No unusual world-writable directories found${NC}"
@@ -341,8 +341,8 @@ filesystem_analysis() {
         head -10 "$REPORT_DIR/suid_sgid_files.txt" | while read -r file; do
             echo -e "  ${YELLOW}    - $file${NC}"
         done
-        if [ $suid_count -gt 10 ]; then
-            echo -e "  ${YELLOW}    ... and $((suid_count - 10)) more${NC}"
+        if [ $suid_count -gt 20 ]; then
+            echo -e "  ${YELLOW}    ... and $((suid_count - 20)) more${NC}"
         fi
     else
         echo -e "  ${GREEN}[✓] No SUID/SGID files found${NC}"
@@ -371,8 +371,8 @@ filesystem_analysis() {
         for log in "${accessible_logs[@]:0:5}"; do
             echo -e "  ${YELLOW}    - $log${NC}"
         done
-        if [ ${#accessible_logs[@]} -gt 5 ]; then
-            echo -e "  ${YELLOW}    ... and $(( ${#accessible_logs[@]} - 5 )) more${NC}"
+        if [ ${#accessible_logs[@]} -gt 10 ]; then
+            echo -e "  ${YELLOW}    ... and $(( ${#accessible_logs[@]} - 10 )) more${NC}"
         fi
     else
         echo -e "  ${GREEN}[✓] No unusual log file access${NC}"
@@ -439,7 +439,7 @@ cron_analysis() {
             ls -la "$cron_dir" 2>/dev/null > "$REPORT_DIR/cron_${cron_dir##*/}.txt"
             
             # Mostrar contenido de archivos cron
-            find "$cron_dir" -type f 2>/dev/null | head -3 | while read -r file; do
+            find "$cron_dir" -type f 2>/dev/null | head -10 | while read -r file; do
                 echo -e "  ${YELLOW}    - $file${NC}"
                 # Mostrar primeras líneas del contenido
                 head -2 "$file" 2>/dev/null | sed 's/^/      /'
@@ -473,7 +473,7 @@ cron_analysis() {
                 found_user_crons=true
             fi
             echo -e "  ${YELLOW}    - User: $user${NC}"
-            echo "$user_cron" | head -3 | sed 's/^/      /'
+            echo "$user_cron" | head -30 | sed 's/^/      /'
         fi
     done
     
@@ -485,9 +485,9 @@ cron_analysis() {
     find /etc/cron* /var/spool/cron* -type f -writable 2>/dev/null > "$REPORT_DIR/writable_cron.txt"
     if [ -s "$REPORT_DIR/writable_cron.txt" ]; then
         echo -e "  ${RED}[!] Writable cron files found: ${REPORT_DIR}/writable_cron.txt${NC}"
-        head -20 "$REPORT_DIR/writable_cron.txt" | while read -r file; do
+        head -30 "$REPORT_DIR/writable_cron.txt" | while read -r file; do
             echo -e "  ${YELLOW}    - $file${NC}"
-            # Mostrar permisos
+
             ls -la "$file" 2>/dev/null | sed 's/^/      /'
         done
     else
@@ -498,7 +498,7 @@ cron_analysis() {
     find /etc/cron* /var/spool/cron* -type f -perm -o+w 2>/dev/null > "$REPORT_DIR/weak_cron_perms.txt"
     if [ -s "$REPORT_DIR/weak_cron_perms.txt" ]; then
         echo -e "  ${RED}[!] Cron files with world-writable permissions:${NC}"
-        head -20 "$REPORT_DIR/weak_cron_perms.txt" | while read -r file; do
+        head -30 "$REPORT_DIR/weak_cron_perms.txt" | while read -r file; do
             echo -e "  ${YELLOW}    - $file${NC}"
         done
     else
@@ -508,7 +508,7 @@ cron_analysis() {
     echo -e "${BOLD}System Crontab (/etc/crontab):${NC}"
     if [ -f "/etc/crontab" ] && [ -r "/etc/crontab" ]; then
         echo -e "  ${YELLOW}[!] /etc/crontab is readable${NC}"
-        head -20 "/etc/crontab" 2>/dev/null | while read -r line; do
+        head -30 "/etc/crontab" 2>/dev/null | while read -r line; do
             echo -e "  ${YELLOW}    $line${NC}"
         done
     else
@@ -546,7 +546,7 @@ network_analysis() {
     if [ -s "$REPORT_DIR/network_connections.txt" ]; then
         local conn_count=$(grep -c -E "(LISTEN|ESTABLISHED)" "$REPORT_DIR/network_connections.txt" 2>/dev/null || echo 0)
         echo -e "  ${YELLOW}[!] Active connections: $conn_count - Saved to: ${REPORT_DIR}/network_connections.txt${NC}"
-        head -5 "$REPORT_DIR/network_connections.txt" | while read -r line; do
+        head -10 "$REPORT_DIR/network_connections.txt" | while read -r line; do
             echo -e "  ${YELLOW}    $line${NC}"
         done
     fi
@@ -588,7 +588,7 @@ docker_checks() {
     
     if command -v docker &> /dev/null; then
         echo -e "${CYAN}[-] Running Docker Containers:${NC}"
-        docker ps 2>/dev/null | head -5
+        docker ps 2>/dev/null | head -10
     fi
     
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
@@ -649,7 +649,7 @@ cloud_metadata_enum() {
     
     if [ -n "$response" ]; then
         echo -e "${RED}[!] CLOUD METADATA FOUND${NC}"
-        echo -e "${YELLOW}$response${NC}" | head -5
+        echo -e "${YELLOW}$response${NC}" | head -10
         quick_cloud_check=true
     else
         echo -e "${GREEN}[✓] No cloud metadata accessible${NC}"
@@ -683,8 +683,7 @@ kubernetes_assessment() {
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
     
     local k8s_found=false
-    
-    # Check Kubernetes related paths
+
     echo -e "${CYAN}[-] Checking Kubernetes Paths...${NC}"
     for k8s_path in "${KUBERNETES_PATHS[@]}"; do
         expanded_path=$(eval echo $k8s_path 2>/dev/null)
@@ -694,13 +693,11 @@ kubernetes_assessment() {
         fi
     done
     
-    # Check for kubectl
     if command -v kubectl >/dev/null 2>&1; then
         echo -e "${YELLOW}[!] kubectl is available${NC}"
         k8s_found=true
     fi
     
-    # Check for K8s API server
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
         echo -e "${RED}[!] Running inside Kubernetes pod${NC}"
         k8s_found=true
@@ -722,7 +719,6 @@ kernel_exploit_suggester() {
     echo -e "${YELLOW}    Version: $KERNEL_VERSION${NC}"
     echo -e "${YELLOW}    Architecture: $(uname -m)${NC}"
     
-    # Check for common kernel exploits
     local exploits_found=()
     
     # DirtyCow check
@@ -740,7 +736,6 @@ kernel_exploit_suggester() {
         exploits_found+=("PwnKit (CVE-2021-4034)")
     fi
     
-    # Display results
     if [ ${#exploits_found[@]} -gt 0 ]; then
         echo -e "${RED}[!] POTENTIAL EXPLOITS FOUND:${NC}"
         for exploit in "${exploits_found[@]}"; do
@@ -760,13 +755,11 @@ process_memory_mining() {
     
     echo -e "${CYAN}[-] Quick process memory scan...${NC}"
     
-    # Look for SSH processes
     ssh_pids=$(pgrep ssh 2>/dev/null)
     if [ -n "$ssh_pids" ]; then
         echo -e "${YELLOW}[!] SSH processes found: $ssh_pids${NC}"
     fi
-    
-    # Look for database processes
+
     db_processes=("mysql" "postgres" "redis" "mongod")
     for db_proc in "${db_processes[@]}"; do
         db_pids=$(pgrep "$db_proc" 2>/dev/null)
@@ -786,7 +779,6 @@ database_connection_extraction() {
     
     echo -e "${CYAN}[-] Quick database connection scan...${NC}"
     
-    # Search in common locations
     search_paths=("/var/www" "/opt" "/home/$CURRENT_USER")
     
     for search_path in "${search_paths[@]}"; do
@@ -811,8 +803,7 @@ web_config_scanning() {
     echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
     
     echo -e "${CYAN}[-] Quick web config scan...${NC}"
-    
-    # Common web roots
+
     web_roots=("/var/www" "/opt/lampp/htdocs" "/home/$CURRENT_USER/public_html")
     
     for web_root in "${web_roots[@]}"; do
@@ -846,7 +837,6 @@ backup_file_discovery() {
         fi
     done
     
-    # Check for version control backups
     vcs_files=$(find /var /home /opt -name ".git" -o -name ".svn" -o -name ".hg" -type d 2>/dev/null)
     if [ -n "$vcs_files" ]; then
         echo -e "${YELLOW}[!] Version control directories found:${NC}"
@@ -894,7 +884,6 @@ main() {
     echo -e "${BOLD}Generated Reports in: ${REPORT_DIR}/${NC}"
     echo ""
     
-    # List generated reports - VERSIÓN CORREGIDA
     if ls "$REPORT_DIR"/*.txt >/dev/null 2>&1; then
         echo -e "${CYAN}[-] Generated Reports:${NC}"
         for file in "$REPORT_DIR"/*.txt; do
