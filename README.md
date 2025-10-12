@@ -60,6 +60,14 @@ chmod +x Linux_EnumPE.sh
 curl -sL https://raw.githubusercontent.com/HernanRodriguez1/Linux_EnumPE/refs/heads/main/Linux_EnumPE.sh | bash
 ```
 
+![1](https://github.com/user-attachments/assets/d7394ab7-5fe7-4f61-bd24-c610a9289a5c)
+![2](https://github.com/user-attachments/assets/50670e1b-f5b2-4c0e-9d6d-b550624788b9)
+![3](https://github.com/user-attachments/assets/68063300-30c1-4a8e-8487-b2c9645ced9e)
+![4](https://github.com/user-attachments/assets/043a4328-29c8-41c3-8138-486abf07fd97)
+![5](https://github.com/user-attachments/assets/cd41dfa6-9978-44a8-92f2-d4b28d4ccedf)
+![6](https://github.com/user-attachments/assets/d96bdf5b-95d2-4010-9c1e-cda633afba8a)
+![7](https://github.com/user-attachments/assets/43877c65-f55c-4ed5-823e-54e954e6af5a)
+
 ## Generated Reports
 
 All reports are saved to `Linux_EnumPE_Reports/` directory:
